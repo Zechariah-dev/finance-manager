@@ -8,6 +8,7 @@ services:
       # Remove 'target' as it is not necessary
     depends_on:
       - redis
+      - postgres
     volumes:
       - .:/usr/src/app
     env_file:
@@ -23,5 +24,19 @@ services:
     volumes:
       - redis:/data
 
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - docker-finance-manager-postgres:/var/lib/postgresql/data
+
 volumes:
   redis:
+    driver: local
+  docker-finance-manager-postgres:
