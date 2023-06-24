@@ -3,13 +3,25 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
-      # Only will build development stage from our dockerfile
-      target: development
+      args:
+        NODE_ENV: development
+      # Remove 'target' as it is not necessary
+    depends_on:
+      - redis
     volumes:
       - .:/usr/src/app
     env_file:
-    - .env
-    # Run a command against the development stage of the image
-    command: npm run start:dev
+      - .env
+    # Remove 'command' as it should be specified in the Dockerfile instead
     ports:
       - 3000:3000
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/data
+
+volumes:
+  redis:
