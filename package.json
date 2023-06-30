@@ -23,14 +23,18 @@
     "docker:down": "docker-compose down"
   },
   "dependencies": {
+    "@apollo/server": "^4.7.5",
+    "@nestjs/apollo": "^12.0.7",
     "@nestjs/cache-manager": "^2.0.1",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^3.0.0",
     "@nestjs/core": "^9.0.0",
+    "@nestjs/graphql": "^12.0.7",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^9.0.0",
     "cache-manager": "^5.2.3",
     "cache-manager-redis-store": "^3.0.1",
+    "graphql": "^16.7.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
   },

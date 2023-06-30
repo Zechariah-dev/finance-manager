@@ -4,6 +4,9 @@ import { AppService } from "./app.service";
 import { ConfigModule } from "@nestjs/config";
 import * as redisStore from "cache-manager-redis-store";
 import { CacheModule } from "@nestjs/cache-manager";
+import { AuthModule } from './auth/auth.module';
+import { GraphQLModule } from "@nestjs/graphql";
+import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 
 @Module({
   imports: [
@@ -14,6 +17,11 @@ import { CacheModule } from "@nestjs/cache-manager";
       port: process.env.REDIS_PORT,
       // store: redisStore,
     }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      playground: true,
+    }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
