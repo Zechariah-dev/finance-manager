@@ -1,26 +1,29 @@
 import { Logger, Module } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { ConfigModule } from "@nestjs/config";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import * as redisStore from "cache-manager-redis-store";
 import { CacheModule } from "@nestjs/cache-manager";
 import { AuthModule } from "./auth/auth.module";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { PrismaModule, loggingMiddleware } from "nestjs-prisma";
+import config from "./common/configs/config";
+import { GqlConfigService } from "./gql.config.service";
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true, load: [config] }),
     CacheModule.register({
       isGlobal: true,
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
       // store: redisStore,
     }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      playground: true,
+      imports: [ConfigModule],
+      useClass: GqlConfigService,
     }),
     PrismaModule.forRoot({
       isGlobal: true,

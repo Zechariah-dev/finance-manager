@@ -9,7 +9,7 @@ async function bootstrap() {
   const prismaService: PrismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
 
-  // Prisma Client Exception Filte for unhanlded exceptions
+  // Prisma Client Exception Filter for unhanlded exceptions
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
