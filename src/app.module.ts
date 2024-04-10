@@ -11,6 +11,7 @@ import { GqlConfigService } from "./gql.config.service";
 import { UsersModule } from './users/users.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { BudgetsModule } from './budgets/budgets.module';
+import { AccountsModule } from './accounts/accounts.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { BudgetsModule } from './budgets/budgets.module';
     UsersModule,
     TransactionsModule,
     BudgetsModule,
+    AccountsModule,
   ],
   controllers: [],
   providers: [],

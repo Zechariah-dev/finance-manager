@@ -11,10 +11,18 @@ export class UsersService {
   }
 
   async create(data: Prisma.UserCreateInput) {
-    return this.prismaService.user.create({ data })
+    return await this.prismaService.$transaction(async (trx) => {
+      const user = await trx.user.create({ data });
+
+      await trx.account.create({
+        data: { balance: 0, userId: user.id },
+      });
+
+      return user;
+    });
   }
 
   async update(payload: Prisma.UserUpdateArgs) {
-    return this.prismaService.user.update(payload)
+    return this.prismaService.user.update(payload);
   }
 }
