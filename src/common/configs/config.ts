@@ -1,4 +1,3 @@
-import { join } from "path";
 import { Config } from "./config.interface";
 
 const config: Config = {

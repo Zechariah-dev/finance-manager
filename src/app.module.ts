@@ -1,6 +1,4 @@
 import { Logger, Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import * as redisStore from "cache-manager-redis-store";
 import { CacheModule } from "@nestjs/cache-manager";
@@ -10,6 +8,9 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { PrismaModule, loggingMiddleware } from "nestjs-prisma";
 import config from "./common/configs/config";
 import { GqlConfigService } from "./gql.config.service";
+import { UsersModule } from './users/users.module';
+import { TransactionsModule } from './transactions/transactions.module';
+import { BudgetsModule } from './budgets/budgets.module';
 
 @Module({
   imports: [
@@ -37,8 +38,11 @@ import { GqlConfigService } from "./gql.config.service";
       },
     }),
     AuthModule,
+    UsersModule,
+    TransactionsModule,
+    BudgetsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
