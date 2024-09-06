@@ -1,21 +1,23 @@
-import { HttpAdapterHost, NestFactory } from "@nestjs/core";
+import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { ValidationPipe } from "@nestjs/common";
-import { PrismaClientExceptionFilter, PrismaService } from "nestjs-prisma";
+import { Logger, ValidationPipe } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = new Logger("NestApplication");
 
+  const configService = app.get<ConfigService>(ConfigService);
+
+  // pipes
   app.useGlobalPipes(new ValidationPipe());
 
-  // enable shutdown hook
-  // const prismaService: PrismaService = app.get(PrismaService);
-  // await prismaService.enableShutdownHooks(app);
+  app.enableCors({ origin: "*" });
 
-  // Prisma Client Exception Filter for unhanlded exceptions
-  const { httpAdapter } = app.get(HttpAdapterHost);
-  // app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  const port = configService.get("PORT");
 
-  await app.listen(3000);
+  // start app
+  await app.listen(port, () => logger.log(`Server started on port ${port}`));
 }
+
 bootstrap();

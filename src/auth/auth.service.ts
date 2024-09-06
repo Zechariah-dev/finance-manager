@@ -1,14 +1,31 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
-import * as bcrypt from "bcrypt";
+import { RegisterInput } from "./models/register-input.model";
+import { Bcrypt } from "../common/utils/bcrypt";
+import { UsersService } from "../users/users.service";
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService
-  ) { }
+    private readonly configService: ConfigService,
+    private usersService: UsersService,
+    private bcrypt: Bcrypt
+  ) {}
+
+  public async userRegister(registerInput: RegisterInput) {
+    const hashedPassword = await this.bcrypt.hashPassword(
+      registerInput.password
+    );
+
+    const user = await this.usersService.create({
+      ...registerInput,
+      password: hashedPassword,
+    });
+
+    return user;
+  }
 
   async generateAuthToken(payload: {
     email: string;
@@ -32,19 +49,10 @@ export class AuthService {
     return tokens;
   }
 
-  async hashPassword(password: string) {
-    const salt = await bcrypt.genSalt(10);
-    return await bcrypt.hash(password, salt);
-  }
-
-  async comparePassword(password: string, hash: string) {
-    return await bcrypt.compare(password, hash);
-  }
-
   verifyToken(token: string, secret?: string) {
     return this.jwtService.verify(token, {
       ignoreExpiration: true,
-      secret: secret ?? this.configService.get("JWT_SECRET")
-    })
+      secret: secret ?? this.configService.get("JWT_SECRET"),
+    });
   }
 }

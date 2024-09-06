@@ -2,10 +2,28 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Account {
+  balance: Float!
+  created_at: DateTime!
+  id: String!
+  name: String!
+  updated_at: DateTime!
+  userId: String!
+}
+
+input CreateAccountInput {
+  balance: Float!
+  name: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+input FindAccountInput {
+  id: String!
+}
 
 input ForgotPassword {
   email: String!
@@ -27,11 +45,14 @@ type MessageResponse {
 }
 
 type Mutation {
+  createAccount(createAccountInput: CreateAccountInput!): Account!
   login(loginInput: LoginInput!): LoginResponse!
   register(registerInput: RegisterInput!): User!
 }
 
 type Query {
+  findUserAccount(findAccountInput: FindAccountInput!): Account!
+  findUserAccounts: [Account!]!
   forgotPassword(forgotPassword: ForgotPassword!): MessageResponse!
   resetPassword(resetPasswordInput: ResetPasswordInput!): MessageResponse!
 }

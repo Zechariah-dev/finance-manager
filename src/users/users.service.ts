@@ -4,10 +4,14 @@ import { PrismaService } from "nestjs-prisma";
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async findByEmail(email: string) {
     return this.prismaService.user.findUnique({ where: { email } });
+  }
+
+  async findById(id: string) {
+    return this.prismaService.user.findFirst({ where: { id } });
   }
 
   async create(data: Prisma.UserCreateInput) {
@@ -15,7 +19,7 @@ export class UsersService {
       const user = await trx.user.create({ data });
 
       await trx.account.create({
-        data: { balance: 0, userId: user.id },
+        data: { balance: 0, userId: user.id, name: "default" },
       });
 
       return user;

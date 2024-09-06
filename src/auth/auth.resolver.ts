@@ -6,59 +6,54 @@ import { RegisterInput } from "./models/register-input.model";
 import { User } from "../common/types/user.model";
 import { ForgotPassword } from "./models/reset-password.model";
 import { MessageResponse } from "../common/types";
-import { ApolloError } from "apollo-server-express";
+import { ApolloError, UserInputError } from "apollo-server-express";
 import { ResetPasswordInput } from "./models/reset-password-input";
 import { UsersService } from "../users/users.service";
+import { Bcrypt } from "../common/utils/bcrypt";
 
 @Resolver("Auth")
 export class AuthResolver {
   constructor(
     private readonly authService: AuthService,
-    private readonly usersService: UsersService
-  ) { }
+    private readonly usersService: UsersService,
+    private bcrypt: Bcrypt
+  ) {}
 
   @Mutation(() => User)
   async register(@Args("registerInput") registerInput: RegisterInput) {
-    const userExist = await this.usersService.findByEmail(registerInput.email);
-    if (userExist) {
-      throw new ApolloError("Could not register with this credentials", "400");
+    const existingUser = await this.usersService.findByEmail(
+      registerInput.email
+    );
+    if (existingUser) {
+      throw new UserInputError("Email already in use");
     }
 
-    const hashedPassword = await this.authService.hashPassword(
-      registerInput.password
-    );
-
-    const user = await this.usersService.create({
-      ...registerInput,
-      password: hashedPassword,
-    });
-
-    return user;
+    return await this.authService.userRegister(registerInput);
   }
 
   @Mutation(() => LoginResponse)
   async login(@Args("loginInput") loginInput: LoginInput) {
-    const userExist = await this.usersService.findByEmail(loginInput.password);
+    const user = await this.usersService.findByEmail(loginInput.email);
 
-    if (!userExist) {
+    if (!user) {
       throw new ApolloError("Incorrect email or password", "400");
     }
 
-    const isMatch = await this.authService.comparePassword(
+    const isMatch = await this.bcrypt.comparePassword(
       loginInput.password,
-      userExist.password
+      user.password
     );
     if (!isMatch) {
       throw new ApolloError("incorrect email or password", "400");
     }
 
     const tokens = await this.authService.generateAuthToken({
-      email: userExist.email,
-      userId: userExist.id,
+      email: user.email,
+      userId: user.id,
       remember_me: loginInput.remember_me,
     });
 
-    return { user: userExist, tokens };
+    return { user, tokens };
   }
 
   @Query(() => MessageResponse)
@@ -86,14 +81,14 @@ export class AuthResolver {
   async resetPassword(
     @Args("resetPasswordInput") resetPasswordInput: ResetPasswordInput
   ) {
-    const payload = this.authService.verifyToken(resetPasswordInput.token) 
+    const payload = this.authService.verifyToken(resetPasswordInput.token);
     const currentTimestamp = Math.floor(Date.now() / 1000);
 
     if (payload.exp > currentTimestamp) {
       throw new ApolloError("reset token expired", "400");
     }
 
-    const hashedPassword = await this.authService.hashPassword(
+    const hashedPassword = await this.bcrypt.hashPassword(
       resetPasswordInput.password
     );
 
@@ -103,9 +98,9 @@ export class AuthResolver {
     });
 
     if (!user) {
-      throw new ApolloError("invalid token", "400");
+      throw new ApolloError("Invalid token", "400");
     }
 
-    return { message: "password reset successfully" };
+    return { message: "password reset mail successfully" };
   }
 }

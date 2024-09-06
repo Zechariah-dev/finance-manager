@@ -8,10 +8,11 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { PrismaModule, loggingMiddleware } from "nestjs-prisma";
 import config from "./common/configs/config";
 import { GqlConfigService } from "./gql.config.service";
-import { UsersModule } from './users/users.module';
-import { TransactionsModule } from './transactions/transactions.module';
-import { BudgetsModule } from './budgets/budgets.module';
-import { AccountsModule } from './accounts/accounts.module';
+import { UsersModule } from "./users/users.module";
+import { TransactionsModule } from "./transactions/transactions.module";
+import { BudgetsModule } from "./budgets/budgets.module";
+import { AccountsModule } from "./accounts/accounts.module";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
   imports: [
