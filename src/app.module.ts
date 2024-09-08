@@ -1,6 +1,5 @@
 import { Logger, Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import * as redisStore from "cache-manager-redis-store";
+import { ConfigModule } from "@nestjs/config";
 import { CacheModule } from "@nestjs/cache-manager";
 import { AuthModule } from "./auth/auth.module";
 import { GraphQLModule } from "@nestjs/graphql";
@@ -12,7 +11,7 @@ import { UsersModule } from "./users/users.module";
 import { TransactionsModule } from "./transactions/transactions.module";
 import { BudgetsModule } from "./budgets/budgets.module";
 import { AccountsModule } from "./accounts/accounts.module";
-import { JwtModule } from "@nestjs/jwt";
+import { IncomeModule } from './income/income.module';
 
 @Module({
   imports: [
@@ -21,7 +20,6 @@ import { JwtModule } from "@nestjs/jwt";
       isGlobal: true,
       host: process.env.REDIS_HOST,
       port: process.env.REDIS_PORT,
-      // store: redisStore,
     }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -44,8 +42,9 @@ import { JwtModule } from "@nestjs/jwt";
     TransactionsModule,
     BudgetsModule,
     AccountsModule,
+    IncomeModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,13 +1,18 @@
 import { Args, Mutation, Resolver, Query } from "@nestjs/graphql";
 import { AccountsService } from "./accounts.service";
 import { Account } from "../common/types/account.model";
-import { UseGuards } from "@nestjs/common";
+import {
+  BadRequestException,
+  NotFoundException,
+  UseGuards,
+} from "@nestjs/common";
 import { GqlAuthGuard } from "../auth/gql.-auth.guard";
 import { CurrentUser } from "../common/decorators/current-user";
 import { User } from "../common/types/user.model";
 import { CreateAccountInput } from "./models/create-account.model";
 import { UserInputError } from "apollo-server-express";
 import { FindAccountInput } from "./models/find-account.model";
+import { UpdateAccountInput } from "./models/update-account.modelt";
 
 @Resolver("Account")
 export class AccountsResolver {
@@ -32,6 +37,36 @@ export class AccountsResolver {
       ...createAccountInput,
       userId: user.id,
     });
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Account)
+  async updateAccount(
+    @CurrentUser() user: User,
+    @Args("updateAccountInput") updateAccountInput: UpdateAccountInput
+  ) {
+    const account = await this.accountsService.findByIdAndUser(
+      updateAccountInput.accountId,
+      user.id
+    );
+
+    if (!account) {
+      throw new NotFoundException();
+    }
+
+    const existingAccount = await this.accountsService.findExisting(
+      updateAccountInput.name,
+      user.id
+    );
+
+    if (existingAccount && existingAccount.id !== account.id) {
+      throw new BadRequestException("an account with this name already exists");
+    }
+
+    return this.accountsService.updateAccount(
+      updateAccountInput.accountId,
+      updateAccountInput
+    );
   }
 
   @UseGuards(GqlAuthGuard)

@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
+import { UpdateAccountInput } from "./models/update-account.modelt";
 
 @Injectable()
 export class AccountsService {
@@ -26,5 +27,9 @@ export class AccountsService {
 
   findByIdAndUser(id: string, userId: string) {
     return this.prismaService.account.findFirst({ where: { id, userId } });
+  }
+
+  updateAccount(id: string, data: Omit<UpdateAccountInput, "accountId">) {
+    return this.prismaService.account.update({ where: { id }, data });
   }
 }

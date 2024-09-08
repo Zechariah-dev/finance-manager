@@ -16,6 +16,14 @@ input CreateAccountInput {
   name: String!
 }
 
+input CreateIncomeInput {
+  accountId: String!
+  amount: Float!
+
+  """income source"""
+  source: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -25,8 +33,32 @@ input FindAccountInput {
   id: String!
 }
 
+input FindIncomesInput {
+  accountId: String
+  limit: Int! = 10
+  page: Int! = 1
+  source: String
+}
+
+type FindIncomesResponse {
+  data: [Income!]!
+  limit: Int!
+  page: Int!
+  totalCount: Int!
+}
+
 input ForgotPassword {
   email: String!
+}
+
+type Income {
+  accountId: String!
+  amount: Float!
+  created_at: DateTime!
+  id: String!
+  source: String!
+  updated_at: DateTime!
+  userId: String!
 }
 
 input LoginInput {
@@ -46,11 +78,15 @@ type MessageResponse {
 
 type Mutation {
   createAccount(createAccountInput: CreateAccountInput!): Account!
+  createIncome(createIncomeInput: CreateIncomeInput!): Income!
   login(loginInput: LoginInput!): LoginResponse!
   register(registerInput: RegisterInput!): User!
+  updateAccount(updateAccountInput: UpdateAccountInput!): Account!
 }
 
 type Query {
+  findIncome(id: String!): Income!
+  findIncomes(findIncomesInput: FindIncomesInput!): FindIncomesResponse!
   findUserAccount(findAccountInput: FindAccountInput!): Account!
   findUserAccounts: [Account!]!
   forgotPassword(forgotPassword: ForgotPassword!): MessageResponse!
@@ -72,6 +108,12 @@ input ResetPasswordInput {
 type TokensType {
   access_token: String!
   refresh_token: String!
+}
+
+input UpdateAccountInput {
+  accountId: String!
+  balance: Float!
+  name: String
 }
 
 type User {
