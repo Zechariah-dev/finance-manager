@@ -12,6 +12,7 @@ import { TransactionsModule } from "./transactions/transactions.module";
 import { BudgetsModule } from "./budgets/budgets.module";
 import { AccountsModule } from "./accounts/accounts.module";
 import { IncomeModule } from './income/income.module';
+import { ExpensesModule } from './expenses/expenses.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { IncomeModule } from './income/income.module';
     BudgetsModule,
     AccountsModule,
     IncomeModule,
+    ExpensesModule,
   ],
   controllers: [],
   providers: [],

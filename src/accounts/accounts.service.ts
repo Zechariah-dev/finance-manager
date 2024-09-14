@@ -11,9 +11,11 @@ export class AccountsService {
     return await this.prismaService.account.create({ data });
   }
 
-  async findExisting(name: string, userId: string) {
+  async findExistingAccount(
+    where: Pick<Prisma.AccountWhereInput, "name" | "currency" | "userId">
+  ) {
     return await this.prismaService.account.findFirst({
-      where: { name, userId },
+      where,
     });
   }
 
@@ -31,5 +33,17 @@ export class AccountsService {
 
   updateAccount(id: string, data: Omit<UpdateAccountInput, "accountId">) {
     return this.prismaService.account.update({ where: { id }, data });
+  }
+
+  async checkBalanceSufficiency(
+    accountId: string,
+    userId: string,
+    amount: number
+  ) {
+    const account = await this.prismaService.account.findFirst({
+      where: { id: accountId },
+    });
+
+    return account.balance > amount;
   }
 }

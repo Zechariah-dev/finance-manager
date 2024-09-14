@@ -19,7 +19,7 @@ export class UsersService {
       const user = await trx.user.create({ data });
 
       await trx.account.create({
-        data: { balance: 0, userId: user.id, name: "default" },
+        data: { balance: 0, userId: user.id, name: "default" } as Prisma.AccountUncheckedCreateInput,
       });
 
       return user;

@@ -7,4 +7,7 @@ export class CreateAccountInput {
 
   @Field(() => Float)
   balance: number;
+
+  @Field(() => String)
+  currency: string;
 }

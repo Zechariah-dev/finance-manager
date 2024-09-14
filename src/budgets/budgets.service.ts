@@ -6,7 +6,8 @@ import { PrismaService } from "nestjs-prisma";
 export class BudgetsService {
   constructor(private readonly prismaServie: PrismaService) {}
 
-  async createBudget(data: Prisma.BudgetCreateInput) {
+  async createBudget(data: Prisma.BudgetUncheckedCreateInput) {
     return await this.prismaServie.budget.create({ data });
   }
 }
+  

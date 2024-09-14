@@ -5,6 +5,7 @@
 type Account {
   balance: Float!
   created_at: DateTime!
+  currency: String!
   id: String!
   name: String!
   updated_at: DateTime!
@@ -13,7 +14,15 @@ type Account {
 
 input CreateAccountInput {
   balance: Float!
+  currency: String!
   name: String!
+}
+
+input CreateExpenseInput {
+  accountId: String!
+  amount: Float!
+  category: String!
+  description: String
 }
 
 input CreateIncomeInput {
@@ -29,8 +38,21 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-input FindAccountInput {
+type Expense {
+  amount: Float!
+  category: String!
+  created_at: DateTime!
+  description: String
   id: String!
+  updated_at: DateTime!
+  userId: String!
+}
+
+input FindExpensesInput {
+  accountId: String
+  category: String!
+  limit: Int! = 10
+  page: Int! = 1
 }
 
 input FindIncomesInput {
@@ -78,17 +100,22 @@ type MessageResponse {
 
 type Mutation {
   createAccount(createAccountInput: CreateAccountInput!): Account!
+  createExpense(createExpenseInput: CreateExpenseInput!): Expense!
   createIncome(createIncomeInput: CreateIncomeInput!): Income!
   login(loginInput: LoginInput!): LoginResponse!
   register(registerInput: RegisterInput!): User!
+  removeExpense(id: Int!): Expense!
   updateAccount(updateAccountInput: UpdateAccountInput!): Account!
+  updateExpense(updateExpenseInput: UpdateExpenseInput!): Expense!
 }
 
 type Query {
+  expense(id: Int!): Expense!
   findIncome(id: String!): Income!
   findIncomes(findIncomesInput: FindIncomesInput!): FindIncomesResponse!
-  findUserAccount(findAccountInput: FindAccountInput!): Account!
+  findUserAccount(id: String!): Account!
   findUserAccounts: [Account!]!
+  findUserExpenses(findExpensesInput: FindExpensesInput!): [Expense!]!
   forgotPassword(forgotPassword: ForgotPassword!): MessageResponse!
   resetPassword(resetPasswordInput: ResetPasswordInput!): MessageResponse!
 }
@@ -114,6 +141,14 @@ input UpdateAccountInput {
   accountId: String!
   balance: Float!
   name: String
+}
+
+input UpdateExpenseInput {
+  accountId: String
+  amount: Float
+  category: String
+  description: String
+  id: Int!
 }
 
 type User {

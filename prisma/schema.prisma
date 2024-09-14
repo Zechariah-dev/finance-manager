@@ -29,14 +29,16 @@ model User {
 }
 
 model Account {
-  id         String   @id @default(uuid())
+  id         String    @id @default(uuid())
   name       String
-  User       User     @relation(fields: [userId], references: [id])
+  User       User      @relation(fields: [userId], references: [id])
+  currency   String
   userId     String
   balance    Float
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   Income     Income[]
+  Expense    Expense[]
 
   @@index([userId])
 }
@@ -77,17 +79,19 @@ enum Range {
 }
 
 model Expense {
-  id       String          @id @default(uuid())
-  name     String
-  amount   Float
-  category ExpenseCategory
-  userId   String
-  user     User            @relation(fields: [userId], references: [id])
+  id          String          @id @default(uuid())
+  description String?
+  amount      Float
+  category    ExpenseCategory
+  userId      String
+  user        User            @relation(fields: [userId], references: [id])
+  accountId   String
+  account     Account         @relation(fields: [accountId], references: [id])
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  @@index([userId])
+  @@index([userId, accountId])
 }
 
 enum ExpenseCategory {

@@ -11,7 +11,6 @@ import { CurrentUser } from "../common/decorators/current-user";
 import { User } from "../common/types/user.model";
 import { CreateAccountInput } from "./models/create-account.model";
 import { UserInputError } from "apollo-server-express";
-import { FindAccountInput } from "./models/find-account.model";
 import { UpdateAccountInput } from "./models/update-account.modelt";
 
 @Resolver("Account")
@@ -24,10 +23,11 @@ export class AccountsResolver {
     @CurrentUser() user: User,
     @Args("createAccountInput") createAccountInput: CreateAccountInput
   ) {
-    const existingAccount = await this.accountsService.findExisting(
-      createAccountInput.name,
-      user.id
-    );
+    const existingAccount = await this.accountsService.findExistingAccount({
+      name: createAccountInput.name,
+      currency: createAccountInput.currency,
+      userId: user.id,
+    });
 
     if (existingAccount) {
       throw new UserInputError("Account with provided name already exists");
@@ -54,10 +54,10 @@ export class AccountsResolver {
       throw new NotFoundException();
     }
 
-    const existingAccount = await this.accountsService.findExisting(
-      updateAccountInput.name,
-      user.id
-    );
+    const existingAccount = await this.accountsService.findExistingAccount({
+      name: updateAccountInput.name,
+      userId: user.id,
+    });
 
     if (existingAccount && existingAccount.id !== account.id) {
       throw new BadRequestException("an account with this name already exists");
@@ -73,9 +73,9 @@ export class AccountsResolver {
   @Query(() => Account)
   findUserAccount(
     @CurrentUser() user: User,
-    @Args("findAccountInput") findAccountInput: FindAccountInput
+    @Args("id", { type: () => String }) id: string,
   ) {
-    return this.accountsService.findByIdAndUser(findAccountInput.id, user.id);
+    return this.accountsService.findByIdAndUser(id, user.id);
   }
 
   @UseGuards(GqlAuthGuard)
