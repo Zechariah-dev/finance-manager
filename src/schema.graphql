@@ -55,6 +55,13 @@ input FindExpensesInput {
   page: Int! = 1
 }
 
+type FindExpensesResponse {
+  data: [Expense!]!
+  limit: Int!
+  page: Int!
+  totalCount: Int!
+}
+
 input FindIncomesInput {
   accountId: String
   limit: Int! = 10
@@ -104,18 +111,16 @@ type Mutation {
   createIncome(createIncomeInput: CreateIncomeInput!): Income!
   login(loginInput: LoginInput!): LoginResponse!
   register(registerInput: RegisterInput!): User!
-  removeExpense(id: Int!): Expense!
   updateAccount(updateAccountInput: UpdateAccountInput!): Account!
-  updateExpense(updateExpenseInput: UpdateExpenseInput!): Expense!
 }
 
 type Query {
-  expense(id: Int!): Expense!
   findIncome(id: String!): Income!
   findIncomes(findIncomesInput: FindIncomesInput!): FindIncomesResponse!
+  findOne(id: String!): Expense!
   findUserAccount(id: String!): Account!
   findUserAccounts: [Account!]!
-  findUserExpenses(findExpensesInput: FindExpensesInput!): [Expense!]!
+  findUserExpenses(findExpensesInput: FindExpensesInput!): FindExpensesResponse!
   forgotPassword(forgotPassword: ForgotPassword!): MessageResponse!
   resetPassword(resetPasswordInput: ResetPasswordInput!): MessageResponse!
 }
@@ -141,14 +146,6 @@ input UpdateAccountInput {
   accountId: String!
   balance: Float!
   name: String
-}
-
-input UpdateExpenseInput {
-  accountId: String
-  amount: Float
-  category: String
-  description: String
-  id: Int!
 }
 
 type User {
