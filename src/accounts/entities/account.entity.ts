@@ -23,3 +23,4 @@ export class Account {
   @Field(() => Date)
   updated_at: Date;
 }
+

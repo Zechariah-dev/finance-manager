@@ -109,6 +109,7 @@ type Mutation {
   createAccount(createAccountInput: CreateAccountInput!): Account!
   createExpense(createExpenseInput: CreateExpenseInput!): Expense!
   createIncome(createIncomeInput: CreateIncomeInput!): Income!
+  deleteAccount(id: String!): Boolean!
   login(loginInput: LoginInput!): LoginResponse!
   register(registerInput: RegisterInput!): User!
   updateAccount(updateAccountInput: UpdateAccountInput!): Account!

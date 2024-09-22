@@ -41,9 +41,13 @@ export class AccountsService {
     amount: number
   ) {
     const account = await this.prismaService.account.findFirst({
-      where: { id: accountId },
+      where: { id: accountId, userId },
     });
 
     return account.balance > amount;
+  }
+
+  async deleteAccount(id: string) {
+    return await this.prismaService.account.delete({ where: { id } });
   }
 }
