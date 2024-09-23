@@ -3,13 +3,13 @@ import { AuthService } from "./auth.service";
 import { LoginInput } from "./models/login-input.model";
 import { LoginResponse } from "./models/login-response.model";
 import { RegisterInput } from "./models/register-input.model";
-import { User } from "../common/types/user.model";
 import { ForgotPassword } from "./models/reset-password.model";
 import { MessageResponse } from "../common/types";
 import { ApolloError, UserInputError } from "apollo-server-express";
 import { ResetPasswordInput } from "./models/reset-password-input";
 import { UsersService } from "../users/users.service";
 import { Bcrypt } from "../common/utils/bcrypt";
+import { User } from "../users/entities/user.entity";
 
 @Resolver("Auth")
 export class AuthResolver {

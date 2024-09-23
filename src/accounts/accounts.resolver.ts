@@ -8,11 +8,11 @@ import {
 } from "@nestjs/common";
 import { GqlAuthGuard } from "../auth/gql.-auth.guard";
 import { CurrentUser } from "../common/decorators/current-user";
-import { User } from "../common/types/user.model";
 import { CreateAccountInput } from "./models/create-account.model";
 import { UserInputError } from "apollo-server-express";
 import { UpdateAccountInput } from "./models/update-account.modelt";
 import { Account } from "./entities/account.entity";
+import { User } from "../users/entities/user.entity";
 
 @Resolver("Account")
 @UseGuards(GqlAuthGuard)

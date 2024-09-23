@@ -1,5 +1,5 @@
-import { User } from "src/common/types/user.model";
 import { ObjectType, Field } from "@nestjs/graphql";
+import { User } from "../users/entities/user.entity";
 
 export type JwtPayload = {
   [key: string]: any;

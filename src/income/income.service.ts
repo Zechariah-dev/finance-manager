@@ -1,12 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { CreateIncomeInput } from "./dto/create-income.input";
-import { UpdateIncomeInput } from "./dto/update-income.input";
 import { PrismaService } from "nestjs-prisma";
 import { FindIncomesInput } from "./dto/find-incomes.input";
 
 @Injectable()
 export class IncomeService {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(createIncomeInput: CreateIncomeInput, userId: string) {
     const income = await this.prismaService.income.create({
@@ -61,13 +60,5 @@ export class IncomeService {
 
   async findOne(id: string, userId: string) {
     return await this.prismaService.income.findFirst({ where: { id, userId } });
-  }
-
-  update(id: number, updateIncomeInput: UpdateIncomeInput) {
-    return `This action updates a #${id} income`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} income`;
   }
 }

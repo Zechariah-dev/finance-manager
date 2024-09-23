@@ -22,3 +22,4 @@ export class User {
   @Field(() => Date)
   updated_at: Date;
 }
+

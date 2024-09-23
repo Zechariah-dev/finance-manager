@@ -5,11 +5,11 @@ import { CreateExpenseInput } from "./dto/create-expense.input";
 import { UseGuards } from "@nestjs/common";
 import { GqlAuthGuard } from "../auth/gql.-auth.guard";
 import { CurrentUser } from "src/common/decorators/current-user";
-import { User } from "../common/types/user.model";
 import { FindExpensesInput } from "./dto/find-expenses.input";
 import { FindExpensesResponse } from "./responses/find-expenses.response";
 import { AccountsService } from "src/accounts/accounts.service";
 import { GraphQLError } from "graphql";
+import { User } from "../users/entities/user.entity";
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Expense)
