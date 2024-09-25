@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
-import { RegisterInput } from "./models/register-input.model";
+import { RegisterInput } from "./inputs/register-user.input";
 import { Bcrypt } from "../common/utils/bcrypt";
 import { UsersService } from "../users/users.service";
 

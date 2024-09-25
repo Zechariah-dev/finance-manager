@@ -1,25 +1,38 @@
 import { Resolver, Query, Mutation, Args } from "@nestjs/graphql";
 import { IncomeService } from "./income.service";
 import { Income } from "./entities/income.entity";
-import { UseGuards } from "@nestjs/common";
+import {
+  InternalServerErrorException,
+  NotFoundException,
+  UseGuards,
+} from "@nestjs/common";
 import { GqlAuthGuard } from "../auth/gql.-auth.guard";
-import { CurrentUser } from "src/common/decorators/current-user";
-import { FindIncomesInput } from "./dto/find-incomes.input";
-import { CreateIncomeInput } from "./dto/create-income.input";
+import { CurrentUser } from "../common/decorators/current-user";
+import { FindIncomesInput } from "./inputs/find-incomes.input";
+import { CreateIncomeInput } from "./inputs/create-income.input";
 import { FindIncomesResponse } from "./response/find-incomes.response";
 import { User } from "../users/entities/user.entity";
 
 @UseGuards(GqlAuthGuard)
 @Resolver(() => Income)
 export class IncomeResolver {
-  constructor(private readonly incomeService: IncomeService) { }
+  constructor(private readonly incomeService: IncomeService) {}
 
   @Mutation(() => Income)
-  createIncome(
+  async createIncome(
     @CurrentUser() user: User,
     @Args("createIncomeInput") createIncomeInput: CreateIncomeInput
   ) {
-    return this.incomeService.create(createIncomeInput, user.id);
+    const createdIncome = await this.incomeService.create(
+      createIncomeInput,
+      user.id
+    );
+
+    if (!createdIncome) {
+      throw new InternalServerErrorException("Failed to created income");
+    }
+
+    return createdIncome;
   }
 
   @Query(() => FindIncomesResponse)
@@ -31,10 +44,16 @@ export class IncomeResolver {
   }
 
   @Query(() => Income)
-  findIncome(
+  async findIncome(
     @Args("id", { type: () => String }) id: string,
     @CurrentUser() user: User
   ) {
-    return this.incomeService.findOne(id, user.id);
+    const income = await this.incomeService.findOne(id, user.id);
+
+    if (!income) {
+      throw new NotFoundException("Income not found");
+    }
+
+    return income;
   }
 }

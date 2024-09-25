@@ -1,12 +1,12 @@
 import { Resolver, Query, Mutation, Args } from "@nestjs/graphql";
 import { AuthService } from "./auth.service";
-import { LoginInput } from "./models/login-input.model";
-import { LoginResponse } from "./models/login-response.model";
-import { RegisterInput } from "./models/register-input.model";
-import { ForgotPassword } from "./models/reset-password.model";
+import { LoginInput } from "./inputs/login-input.input";
+import { LoginResponse } from "./responses/login.response";
+import { RegisterInput } from "./inputs/register-user.input";
+import { ForgotPassword } from "./inputs/reset-password.model";
 import { MessageResponse } from "../common/types";
 import { ApolloError, UserInputError } from "apollo-server-express";
-import { ResetPasswordInput } from "./models/reset-password-input";
+import { ResetPasswordInput } from "./inputs/reset-password.input";
 import { UsersService } from "../users/users.service";
 import { Bcrypt } from "../common/utils/bcrypt";
 import { User } from "../users/entities/user.entity";

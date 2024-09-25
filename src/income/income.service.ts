@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { CreateIncomeInput } from "./dto/create-income.input";
+import { CreateIncomeInput } from "./inputs/create-income.input";
 import { PrismaService } from "nestjs-prisma";
-import { FindIncomesInput } from "./dto/find-incomes.input";
+import { FindIncomesInput } from "./inputs/find-incomes.input";
 
 @Injectable()
 export class IncomeService {

@@ -2,13 +2,12 @@ import { Resolver, Query, Mutation, Args, Int } from "@nestjs/graphql";
 import { ExpensesService } from "./expenses.service";
 import { Expense } from "./entities/expense.entity";
 import { CreateExpenseInput } from "./dto/create-expense.input";
-import { UseGuards } from "@nestjs/common";
+import { UnprocessableEntityException, UseGuards } from "@nestjs/common";
 import { GqlAuthGuard } from "../auth/gql.-auth.guard";
 import { CurrentUser } from "src/common/decorators/current-user";
 import { FindExpensesInput } from "./dto/find-expenses.input";
 import { FindExpensesResponse } from "./responses/find-expenses.response";
 import { AccountsService } from "src/accounts/accounts.service";
-import { GraphQLError } from "graphql";
 import { User } from "../users/entities/user.entity";
 
 @UseGuards(GqlAuthGuard)
@@ -32,7 +31,7 @@ export class ExpensesResolver {
       );
 
     if (!isBalanceSufficient) {
-      throw new GraphQLError("account balance is insufficient");
+      throw new UnprocessableEntityException("Account balance is insufficient");
     }
 
     return this.expensesService.create(createExpenseInput, user.id);

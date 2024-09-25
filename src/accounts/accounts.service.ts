@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 import { PrismaService } from "nestjs-prisma";
-import { UpdateAccountInput } from "./models/update-account.modelt";
+import { UpdateAccountInput } from "./inputs/update-account.input";
 
 @Injectable()
 export class AccountsService {
